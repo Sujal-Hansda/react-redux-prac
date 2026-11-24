@@ -5,6 +5,7 @@ import { axiosInstance } from "../config/axiosInstance";
     try {
       console.log("api function called");
       let res= await axiosInstance.get("/products")
+      console.log(res);
       return res.data.products;
     } catch (error) {
       console.log("Error in fetching products",error);

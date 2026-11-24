@@ -1,45 +1,35 @@
-import React, { useEffect, useState } from 'react'
-import axios from "axios"
+import { useState } from 'react'
+import Filters from '../components/Filters'
 import ProductCard from '../components/ProductCard'
 import ProductSkeleton from '../components/ProductSkeleton'
-import {getProductsData} from "../apis/ProductApi"
+import { useproductApi } from '../hooks/productHooks'
+
 const ShopPage = () => {
+ let {data,isPending,error} = useproductApi()
+  const [search, setSearch] = useState("")
 
-  const [productsData, setProductsData] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
-
+  if (error) return <h1>{error.message}</h1>
   
+  const handleSearch = (value) => {
+  setSearch(value)
+}
 
-
-  const getData = async()=>
-    {
-      let data = await getProductsData();
-      setProductsData(data)
-      setIsLoading(false)
-
-    } 
-    useEffect(()=>
-    {
-      getData();
-    },[])
+  const filteredData = data?.filter((product) =>
+    product.title.toLowerCase().includes(search.toLowerCase())
+  )
 
   return (
-    <div className='cursor-pointer'>
-      {isLoading ? (
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-    {Array.from({ length: 8 }).map((_, index) => (
-      <ProductSkeleton key={index} />
-    ))}
-  </div>
-) : (
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-    {productsData.map((product) => (
-      <ProductCard key={product.id} product={product} />
-    ))}
-  </div>
-)}
+    <>
+      <Filters handleSearch={handleSearch} />
+    <div className='grid grid-cols-4 gap-4 p-4'>
+      {filteredData?.map((product) => (
+        <ProductCard key={product.id} product={product} />
+      ))}
     </div>
+      
+    </>
   )
 }
+
 
 export default ShopPage
