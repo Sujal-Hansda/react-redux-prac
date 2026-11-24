@@ -21,7 +21,7 @@ export const useAuth = ()=>
   const loginForm = (data)=>{
     let user = registeredUsers.find((val)=>
     {
-      return val.email ===data.email && val.password === data.password;
+      return val.email === data.email && val.password === data.password;
     })
     
     if (!user)
